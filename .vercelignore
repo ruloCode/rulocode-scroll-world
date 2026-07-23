@@ -1,0 +1,8 @@
+# Solo se despliega el sitio estático (index.html + scrub-engine.js + assets/)
+.work/
+node_modules/
+.git/
+package.json
+package-lock.json
+*.log
+.DS_Store

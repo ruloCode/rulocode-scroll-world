@@ -2,7 +2,7 @@
 
 Landing page inmersiva donde el scroll pilotea una cámara que **vuela dentro de cada escena** y fluye a la siguiente sin cortes — un solo vuelo continuo por un pequeño mundo generado. Presenta los servicios de **rulocode**: consultoría de IA, automatización, desarrollo frontend y performance.
 
-**Live:** _(se completa tras el deploy en Vercel)_
+**Live:** https://rulocode-scroll-world.vercel.app
 
 ## Cómo funciona
 
