@@ -9,7 +9,7 @@
   <!-- El póster y el primer vuelo son lo primero que se ve: que el navegador los pida
        ya, sin esperar a que el motor monte y calcule el scroll. -->
   <link rel="preload" as="image" href="assets/ia/01-semana.webp" />
-  <link rel="preload" as="fetch" href="assets/vid/ia/v1.mp4" crossorigin="anonymous" />
+  <link rel="preload" as="video" href="assets/vid/ia/s1.mp4" type="video/mp4" />
   <style>
     /* Tema: fondo crema del diorama + acento verde esmeralda de rulocode. */
     :root, .sw-root {
@@ -140,45 +140,26 @@
   <div id="top"></div>
   <div id="world"></div>
 
-  <script src="scrub-engine.js?v=3"></script>
+  <script src="stage-engine.js?v=1"></script>
   <script>
     // El vuelo sigue la narrativa de rulocode.com/es/ia: la semana atascada →
     // diagnóstico → copiloto → automatización → el reto → posicionarte → Semana 0.
     const CTA = { label: 'Entrar y empezar', href: 'https://rulocode.com/es/ia#lista' };
 
-    mountScrollWorld(document.getElementById('world'), {
+    mountStageWorld(document.getElementById('world'), {
       brand: { name: 'rulocode', href: '#top' },
       cta: CTA,
       hint: 'baja para volar',
-      // Recorrido acortado ~25%: el vuelo avanza más por píxel de scroll, y la
-      // lectura ya no depende de bajar despacio sino de las paradas de abajo.
-      diveScroll: 1.0,
-      // Los conectores están recortados a 3s (72 frames) porque el modelo los hacía
-      // derivar de vuelta a la escena de la oficina en su segunda mitad.
-      connScroll: 0.3,
-      // Estaciones: el panel sube entre el 22% y el 31% del tramo, se queda quieto
-      // y legible hasta el 69%, y se va antes del 78%. Lo que queda a cada lado son
-      // tramos limpios donde solo se ve volar la cámara.
-      copyHold: [0.18, 0.82],
-      copyFade: 0.08,
-      // La cámara se frena justo en el centro del tramo — donde está la parada — y
-      // recupera velocidad al entrar y al salir. Es lo que da la sensación de fluidez.
-      linger: 0.55,
-      // Los conectores son pull-backs: terminan en la vista lejana de su isla y la
-      // siguiente escena entra desde su propia vista lejana. Una disolvencia ancha
-      // (el default es 0.12vh) hace que ese cambio se lea como intención, no como corte.
-      crossfade: 0.3,
-      // Con clips de ~4MB que se descargan enteros antes de poder scrubearse, 1.6vh
-      // de anticipación (el default) llega tarde: se ve el póster estático. 4.5vh
-      // arranca la descarga con varios segundos de margen.
-      preload: 4.5,
+      // El panel entra a los 2.2s de clip, con la animación todavía corriendo: así
+      // se puede leer sin esperar a que el vuelo termine.
+      copyAt: 2.2,
       sections: [
         {
           id: 'semana', label: 'Empieza',
           still: 'assets/ia/01-semana.webp',
-          clip: 'assets/vid/ia/v1.mp4', clipMobile: 'assets/vid/ia/v1-m.mp4',
+          clip: 'assets/vid/ia/s1.mp4', clipMobile: 'assets/vid/ia/s1-m.mp4',
           accent: '#2E9C7B',
-          scroll: 1.2,
+          copyAt: 2.6,
           eyebrow: 'AI Shift Challenge · Semana 0 abierta',
           title: 'Automatiza tu trabajo con IA en 4 semanas. Sin escribir código.',
           body: 'Programa en vivo para profesionales no técnicos: 4 sesiones privadas, 2 grupales y una automatización tuya funcionando al final.',
@@ -187,7 +168,7 @@
         {
           id: 'rol', label: 'Tu rol',
           still: 'assets/ia/02-rol.webp',
-          clip: 'assets/vid/ia/v2.mp4', clipMobile: 'assets/vid/ia/v2-m.mp4',
+          clip: 'assets/vid/ia/s2.mp4', clipMobile: 'assets/vid/ia/s2-m.mp4',
           accent: '#D3A048',
           eyebrow: '01 · Tu rol primero',
           title: 'Empezamos por tu trabajo, no por las herramientas.',
@@ -197,7 +178,7 @@
         {
           id: 'copiloto', label: 'Copiloto',
           still: 'assets/ia/03-copiloto.webp',
-          clip: 'assets/vid/ia/v3.mp4', clipMobile: 'assets/vid/ia/v3-m.mp4',
+          clip: 'assets/vid/ia/s3.mp4', clipMobile: 'assets/vid/ia/s3-m.mp4',
           accent: '#4C90A3',
           eyebrow: '02 · Copiloto diario',
           title: 'De prompts sueltos a flujos que entregan trabajo terminado.',
@@ -207,7 +188,7 @@
         {
           id: 'automatiza', label: 'Automatiza',
           still: 'assets/ia/04-automatiza.webp',
-          clip: 'assets/vid/ia/v4.mp4', clipMobile: 'assets/vid/ia/v4-m.mp4',
+          clip: 'assets/vid/ia/s4.mp4', clipMobile: 'assets/vid/ia/s4-m.mp4',
           accent: '#E85E3E',
           eyebrow: '03 · Automatización',
           title: 'Tus tareas repetitivas, en piloto automático.',
@@ -217,9 +198,8 @@
         {
           id: 'reto', label: 'El reto',
           still: 'assets/ia/05-reto.webp',
-          clip: 'assets/vid/ia/v5.mp4', clipMobile: 'assets/vid/ia/v5-m.mp4',
+          clip: 'assets/vid/ia/s5.mp4', clipMobile: 'assets/vid/ia/s5-m.mp4',
           accent: '#9E4B3F',
-          scroll: 1.05,
           eyebrow: '04 · El reto',
           title: '4 sesiones privadas conmigo, 2 grupales, un flujo funcionando.',
           body: 'Cuatro sesiones uno a uno sobre tu caso concreto, dos grupales con otros roles, y al final un flujo completo operando.',
@@ -228,7 +208,7 @@
         {
           id: 'posicionate', label: 'Posiciónate',
           still: 'assets/ia/06-posicionate.webp',
-          clip: 'assets/vid/ia/v6.mp4', clipMobile: 'assets/vid/ia/v6-m.mp4',
+          clip: 'assets/vid/ia/s6.mp4', clipMobile: 'assets/vid/ia/s6-m.mp4',
           accent: '#4C90A3',
           eyebrow: '05 · Posiciónate',
           title: 'Sé la persona de IA de tu equipo.',
@@ -238,31 +218,14 @@
         {
           id: 'semana0', label: 'Semana 0',
           still: 'assets/ia/07-semana0.webp',
-          clip: 'assets/vid/ia/v7.mp4', clipMobile: 'assets/vid/ia/v7-m.mp4',
+          clip: 'assets/vid/ia/s7.mp4', clipMobile: 'assets/vid/ia/s7-m.mp4',
           accent: '#2E9C7B',
-          scroll: 1.3,
           eyebrow: 'Semana 0 · gratis',
           title: 'No esperes a la cohorte — empieza esta semana.',
           body: 'Tres lecciones gratis para diagnosticar tu semana, montar tu copiloto y dejar tu primera automatización corriendo.',
           tags: ['3 lecciones gratis', 'Cero spam'],
           cta: { primary: CTA },
         },
-      ],
-      connectors: [
-        'assets/vid/ia/c1.mp4',
-        'assets/vid/ia/c2.mp4',
-        'assets/vid/ia/c3.mp4',
-        'assets/vid/ia/c4.mp4',
-        'assets/vid/ia/c5.mp4',
-        'assets/vid/ia/c6.mp4',
-      ],
-      connectorsMobile: [
-        'assets/vid/ia/c1-m.mp4',
-        'assets/vid/ia/c2-m.mp4',
-        'assets/vid/ia/c3-m.mp4',
-        'assets/vid/ia/c4-m.mp4',
-        'assets/vid/ia/c5-m.mp4',
-        'assets/vid/ia/c6-m.mp4',
       ],
     });
   </script>
