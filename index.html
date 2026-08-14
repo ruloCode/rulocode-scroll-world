@@ -88,10 +88,11 @@
           patrones móviles (SoFi, Superpower, Tolan) mantienen visual y texto en
           zonas separadas, con el texto breve y anclado abajo. */
     @media (max-width:860px){
-      /* 60% sigue al sujeto, que vive en el tercio derecho del frame. Probé centrar
-         la escena de cierre (48%) y fue peor: en su frame final la cámara está muy
-         cerca y Rulo se salía del encuadre por la derecha. */
-      .sw-scene__video,.sw-scene__still{ object-position:60% 44%; }
+      /* Centrado. Antes se desplazaba al 60% para perseguir al sujeto, porque los
+         clips terminaban en un plano muy cerrado; ahora los clips móviles se cortan
+         más lejos (al 55% del vuelo) y la escena entra entera, así que centrar es
+         lo correcto y además queda equilibrado. */
+      .sw-scene__video,.sw-scene__still{ object-position:50% 46%; }
 
       .sw-copy{
         width:auto;

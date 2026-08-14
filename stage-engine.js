@@ -120,10 +120,17 @@ function mountStageWorld(container, config) {
     if (!src) return null;
     const v = document.createElement('video');
     v.className = 'sw-scene__video';
+    // Safari iOS solo deja reproducir sin gesto si muted+playsinline+autoplay están
+    // como ATRIBUTOS del elemento, puestos antes del src, y el elemento ya está en
+    // el DOM. Cualquier otro orden y el play() se rechaza en silencio.
     v.muted = true; v.defaultMuted = true; v.playsInline = true; v.loop = false;
-    v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('preload', eager ? 'auto' : 'metadata');
+    v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('autoplay', '');
+    v.setAttribute('preload', eager ? 'auto' : 'metadata');
     v.preload = eager ? 'auto' : 'metadata';
-    v.src = src;
+    const poster = (isMobile() && s.cfg.stillMobile) ? s.cfg.stillMobile : s.cfg.still;
+    if (poster) v.poster = poster;
+    s.el.appendChild(v);      // primero al DOM…
+    v.src = src;              // …y luego el src
     // El póster solo se retira cuando hay un frame pintado de verdad: en iOS un
     // vídeo cargado pero no reproducido sigue en blanco.
     const reveal = () => s.el.classList.add('has-clip');
@@ -132,7 +139,7 @@ function mountStageWorld(container, config) {
     v.addEventListener('timeupdate', () => {
       if (!s.copyShown && v.currentTime >= copyAtFor(s)) showCopy(indexOf(s));
     });
-    s.el.appendChild(v); s.video = v;
+    s.video = v;
     return v;
   }
 
@@ -239,14 +246,14 @@ function mountStageWorld(container, config) {
   function onFirstGesture() {
     if (userReady) return;
     userReady = true;
-    S.forEach(s => {
-      if (!s.video || s.playing) return;
-      try { const p = s.video.play(); if (p && p.then) p.then(() => { try { s.video.pause(); } catch (e) {} }).catch(() => {}); }
-      catch (e) {}
-    });
+    // Si el autoplay de arranque fue rechazado (iOS en modo de bajo consumo, ajustes
+    // restrictivos), este primer gesto es la ocasión de poner en marcha la sección
+    // que el usuario está viendo. Sin esto la página se queda en el póster.
+    const cur = S[active];
+    if (cur && (!cur.video || cur.video.paused)) playSection(cur);
   }
-  window.addEventListener('pointerdown', onFirstGesture, { once: true, passive: true });
-  window.addEventListener('touchstart', onFirstGesture, { once: true, passive: true });
+  ['pointerdown', 'touchstart', 'wheel', 'keydown'].forEach(ev =>
+    window.addEventListener(ev, onFirstGesture, { once: true, passive: true }));
 
   seedStageParticles(particles, reduce || coarse);
 
@@ -292,12 +299,14 @@ function injectStageCSS() {
     color:var(--sw-ink);font-family:var(--sw-font-body);}
   html,body{margin:0;background:var(--sw-bg,#F5EDE0);}
   /* Un gesto = una sección. scroll-snap-stop:always evita que un swipe largo se
-     salte estaciones, que es justo lo que hace que la experiencia sea "un scroll".
-     Va en html y en body porque un overflow declarado en body puede desplazar cuál
-     de los dos es el contenedor de scroll, y entonces el snap puesto solo en html no
-     aplica. Por eso mismo se retiró overflow-x:hidden: rompía el snap. */
-  html,body{scroll-snap-type:y mandatory;}
-  .sw-snap{height:100vh;height:100dvh;scroll-snap-align:start;scroll-snap-stop:always;}
+     salte estaciones.
+     Solo en html: declararlo también en body hace que Safari iOS tenga dos
+     contenedores de snap anidados y el scroll se queda trabado. */
+  html{scroll-snap-type:y mandatory;}
+  /* svh y no dvh: dvh cambia de valor cuando la barra de URL de Safari se contrae,
+     y con snap mandatory eso deja al navegador reajustando la posición en bucle.
+     svh es la altura con las barras visibles, o sea constante durante el scroll. */
+  .sw-snap{height:100vh;height:100svh;scroll-snap-align:start;scroll-snap-stop:always;}
   .sw-sky{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:var(--sw-bg);}
   .sw-sky__grad{position:absolute;inset:-10%;background:linear-gradient(178deg,color-mix(in srgb,var(--sw-accent) 12%,var(--sw-bg)) 0%,var(--sw-bg) 55%,color-mix(in srgb,var(--sw-accent) 6%,var(--sw-bg)) 100%);}
   .sw-sky__glow{position:absolute;inset:0;background:radial-gradient(60% 42% at 74% 16%,color-mix(in srgb,var(--sw-accent) 22%,transparent),transparent 70%),radial-gradient(46% 34% at 50% 50%,color-mix(in srgb,#fff 45%,transparent),transparent 70%);}
@@ -354,6 +363,9 @@ function injectStageCSS() {
   .sw-track{position:relative;z-index:1;width:100%;pointer-events:none;}
   @media (max-width:860px){
     .sw-nav{display:none;}
+    /* Encuadre centrado: con los clips móviles cortados más lejos ya entra la escena
+       completa, así que desplazar el foco a la derecha solo la descentraba. */
+    .sw-scene__video,.sw-scene__still{object-position:50% 46%;}
     .sw-copylayer::before{width:100%;height:60%;top:auto;bottom:0;background:linear-gradient(0deg,var(--sw-bg) 8%,color-mix(in srgb,var(--sw-bg) 70%,transparent) 46%,transparent 100%);}
     .sw-copy{left:clamp(18px,5vw,64px);right:clamp(18px,5vw,64px);top:auto;bottom:clamp(64px,14vh,120px);width:auto;max-width:560px;
       transform:translateY(1.4vh);}
@@ -364,9 +376,6 @@ function injectStageCSS() {
     .sw-scene__video,.sw-scene__still{object-position:center 46%;}
     .sw-hint{bottom:calc(20px + env(safe-area-inset-bottom));}
     .sw-route{gap:16px;right:6px;} .sw-route__label{display:none;}
-  }
-  @media (max-width:860px) and (orientation:portrait){
-    .sw-scene__video,.sw-scene__still{object-position:center 44%;}
   }
   @media (hover:none) and (pointer:coarse){
     .sw-route{padding:14px 6px;}
