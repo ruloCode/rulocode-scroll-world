@@ -3,9 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>rulocode — Consultoría de IA y software</title>
-  <meta name="description" content="Automatización con IA, desarrollo frontend y software a medida. Baja para volar por el mundo de rulocode." />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232E9C7B'/%3E%3Crect x='15' y='17' width='34' height='27' rx='9' fill='%23F4EAD5'/%3E%3Ccircle cx='26' cy='31' r='3.4' fill='%232A2320'/%3E%3Ccircle cx='38' cy='31' r='3.4' fill='%232A2320'/%3E%3Crect x='29' y='7' width='6' height='7' rx='3' fill='%23D3A048'/%3E%3C/svg%3E" />
+  <title>AI Shift Challenge — Automatiza tu trabajo con IA en 4 semanas</title>
+  <meta name="description" content="Programa en vivo para profesionales no técnicos: 4 sesiones privadas, 2 grupales y una automatización tuya funcionando. Semana 0 gratis. Baja para volar." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232E9C7B'/%3E%3Ccircle cx='21' cy='15' r='7' fill='%235A3A2A'/%3E%3Ccircle cx='32' cy='11' r='8' fill='%235A3A2A'/%3E%3Ccircle cx='43' cy='15' r='7' fill='%235A3A2A'/%3E%3Crect x='15' y='17' width='34' height='27' rx='9' fill='%23F4EAD5'/%3E%3Ccircle cx='26' cy='31' r='3.4' fill='%232A2320'/%3E%3Ccircle cx='38' cy='31' r='3.4' fill='%232A2320'/%3E%3C/svg%3E" />
+  <!-- El póster y el primer vuelo son lo primero que se ve: que el navegador los pida
+       ya, sin esperar a que el motor monte y calcule el scroll. -->
+  <link rel="preload" as="image" href="assets/ia/01-semana.webp" />
+  <link rel="preload" as="fetch" href="assets/vid/ia/v1.mp4" crossorigin="anonymous" />
   <style>
     /* Tema: fondo crema del diorama + acento verde esmeralda de rulocode. */
     :root, .sw-root {
@@ -15,29 +19,49 @@
       --sw-accent: #2E9C7B;      /* esmeralda — los acentos por sección lo sobreescriben */
     }
 
-    /* ===== Legibilidad + accesibilidad (sin @layer → gana a los defaults del motor) ===== */
+    /* ===== Legibilidad =====
+       El texto oscuro sobre una escena clara y detallada no se sostiene con un
+       degradado translúcido: el ojo compite con el diorama. Referencias como Cake
+       Equity resuelven esto con una columna limpia y separada, no con superposición.
+       Aquí el copy vive en un panel de fondo real (crema casi opaco + blur), así el
+       contraste no depende de qué haya debajo en ese frame del vídeo. */
 
-    /* Scrim desktop: más opaco y ancho, el texto oscuro asienta sobre crema */
-    .sw-copylayer::before{
-      width:min(62vw,880px);
-      background:linear-gradient(90deg,
-        var(--sw-bg) 0%,
-        color-mix(in srgb,var(--sw-bg) 94%,transparent) 46%,
-        color-mix(in srgb,var(--sw-bg) 62%,transparent) 72%,
-        transparent 100%);
+    /* Fuera el scrim: el panel ya garantiza el contraste y el degradado solo ensuciaba. */
+    .sw-copylayer::before{ display:none; }
+
+    .sw-copy{
+      /* 460px obligaba al titular a romperse en 4-5 líneas cortas — de ahí el bulto.
+         Con ~600px cae en 2-3 líneas y respira. */
+      width:min(46vw,600px);
+      background:color-mix(in srgb,var(--sw-bg) 94%,#fff);
+      backdrop-filter:blur(18px) saturate(1.06);
+      -webkit-backdrop-filter:blur(14px) saturate(1.08);
+      border:1px solid color-mix(in srgb,var(--sw-ink) 8%,transparent);
+      border-radius:24px;
+      padding:30px 34px 34px;
+      box-shadow:0 24px 70px -28px color-mix(in srgb,var(--sw-ink) 42%,transparent),
+                 0 2px 8px -4px color-mix(in srgb,var(--sw-ink) 20%,transparent);
     }
-    /* Eyebrow: acento oscurecido hacia la tinta → pasa AA (ocre/teal crudos fallaban) */
+    /* Sobre fondo opaco las sombras de texto solo emborronan: se eliminan todas. */
+    .sw-copy__num{ color:color-mix(in srgb,var(--sw-ink) 62%,var(--sw-ink-soft)); text-shadow:none; }
     .sw-copy__eyebrow{
-      color:color-mix(in srgb,var(--sw-accent) 46%,var(--sw-ink));
-      text-shadow:0 1px 10px color-mix(in srgb,var(--sw-bg) 82%,transparent);
+      margin-top:10px;
+      color:color-mix(in srgb,var(--sw-accent) 42%,var(--sw-ink));
+      text-shadow:none;
     }
-    /* Cuerpo + número: tinta más plena y halo crema para separar de la escena */
+    .sw-copy__title{
+      font-size:clamp(1.9rem,3.3vw,3rem);
+      line-height:1.06;
+      text-wrap:balance;              /* reparte las líneas en vez de dejar viudas */
+      color:var(--sw-ink);
+      text-shadow:none;
+    }
     .sw-copy__body{
-      color:color-mix(in srgb,var(--sw-ink) 92%,var(--sw-ink-soft));
-      text-shadow:0 1px 2px var(--sw-bg),0 2px 14px color-mix(in srgb,var(--sw-bg) 78%,transparent);
+      color:color-mix(in srgb,var(--sw-ink) 88%,var(--sw-ink-soft));
+      max-width:52ch;                 /* medida cómoda de lectura */
+      line-height:1.6;
+      text-shadow:none;
     }
-    .sw-copy__num{ color:color-mix(in srgb,var(--sw-ink) 75%,var(--sw-ink-soft)); }
-    .sw-copy__title{ text-shadow:0 2px 22px color-mix(in srgb,var(--sw-bg) 84%,transparent),0 1px 2px color-mix(in srgb,var(--sw-bg) 60%,transparent); }
     /* Tags: texto oscuro sobre pastilla clara opaca */
     .sw-copy__tags li{
       color:color-mix(in srgb,var(--sw-accent) 40%,#000);
@@ -53,20 +77,62 @@
     /* Foco visible de teclado (WCAG 2.4.7) */
     a:focus-visible,button:focus-visible{ outline:3px solid var(--sw-ink);outline-offset:3px;border-radius:8px; }
 
-    /* Móvil: aquí estaba el peor contraste — scrim más alto/opaco + texto algo mayor */
+    /* ===== Móvil, pensado primero para el teléfono =====
+       Dos problemas propios del formato vertical, que no existen en desktop:
+
+       1. El clip es 16:9 y la pantalla ~9:19.5, así que `cover` se come cerca del
+          75% del ancho. El encuadre queda centrado en el vacío que dejamos a la
+          izquierda para el texto, y la acción se va fuera de pantalla. Se corrige
+          moviendo el punto focal al sujeto, que vive en el tercio derecho.
+       2. La tarjeta ocupaba el 48% del alto y caía justo sobre la escena. Los
+          patrones móviles (SoFi, Superpower, Tolan) mantienen visual y texto en
+          zonas separadas, con el texto breve y anclado abajo. */
     @media (max-width:860px){
-      .sw-copylayer::before{
-        width:100%;height:76%;top:auto;bottom:0;
-        background:linear-gradient(0deg,
-          var(--sw-bg) 0%,
-          var(--sw-bg) 22%,
-          color-mix(in srgb,var(--sw-bg) 90%,transparent) 52%,
-          color-mix(in srgb,var(--sw-bg) 42%,transparent) 80%,
-          transparent 100%);
+      /* 60% sigue al sujeto, que vive en el tercio derecho del frame. Probé centrar
+         la escena de cierre (48%) y fue peor: en su frame final la cámara está muy
+         cerca y Rulo se salía del encuadre por la derecha. */
+      .sw-scene__video,.sw-scene__still{ object-position:60% 44%; }
+
+      .sw-copy{
+        width:auto;
+        left:12px; right:12px;
+        bottom:calc(20px + env(safe-area-inset-bottom));
+        padding:16px 18px 18px;
+        border-radius:20px;
+        background:color-mix(in srgb,var(--sw-bg) 95%,#fff);
+        box-shadow:0 18px 44px -22px color-mix(in srgb,var(--sw-ink) 55%,transparent);
       }
-      .sw-copy__title{ font-size:clamp(2rem,7.8vw,2.8rem);line-height:1.05; }
-      .sw-copy__body{ font-size:clamp(1.02rem,4vw,1.16rem);line-height:1.5; }
-      .sw-copy__eyebrow{ font-size:.84rem; }
+      /* El "01 / 07" es ruido cuando el espacio vertical es el recurso escaso. */
+      .sw-copy__num{ display:none; }
+      /* El eyebrow largo se partía en dos líneas y robaba una línea de titular. */
+      .sw-copy__eyebrow{
+        margin-top:0; font-size:.68rem; letter-spacing:.1em;
+        white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      }
+      .sw-copy__title{ font-size:clamp(1.4rem,5.6vw,1.95rem);line-height:1.14;margin-top:7px; }
+      .sw-copy__body{
+        font-size:.94rem;line-height:1.45;margin-top:10px;max-width:none;
+        /* Con el copy ya acortado no debería recortar nunca; queda como red de
+           seguridad para traducciones o textos más largos. */
+        display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;
+      }
+      .sw-copy__tags{ margin-top:12px;gap:6px; }
+      .sw-copy__tags li{ font-size:.72rem;padding:5px 11px; }
+      .sw-copy__tags li:nth-child(n+3){ display:none; }   /* dos etiquetas bastan */
+      .sw-copy__cta{ margin-top:14px; }
+      /* El rail lateral se cruzaba por encima de la tarjeta y su etiqueta activa
+         flotaba sobre la escena. En vertical no hay ancho para las dos cosas, y
+         arriba ya existe una barra de progreso que cumple la misma función. */
+      .sw-route{ display:none; }
+      /* En móvil el gesto de scroll es evidente y el hint chocaba con la tarjeta. */
+      .sw-hint{ display:none; }
+
+      /* Teléfonos cortos (SE, mini): recortar aún más antes que desbordar. */
+      @media (max-height:700px){
+        .sw-copy__title{ font-size:clamp(1.3rem,5.2vw,1.7rem); }
+        .sw-copy__body{ -webkit-line-clamp:3;font-size:.9rem; }
+        .sw-copy__tags{ display:none; }
+      }
     }
   </style>
 </head>
@@ -74,74 +140,129 @@
   <div id="top"></div>
   <div id="world"></div>
 
-  <script src="scrub-engine.js?v=2"></script>
+  <script src="scrub-engine.js?v=3"></script>
   <script>
+    // El vuelo sigue la narrativa de rulocode.com/es/ia: la semana atascada →
+    // diagnóstico → copiloto → automatización → el reto → posicionarte → Semana 0.
+    const CTA = { label: 'Entrar y empezar', href: 'https://rulocode.com/es/ia#lista' };
+
     mountScrollWorld(document.getElementById('world'), {
       brand: { name: 'rulocode', href: '#top' },
-      cta: { label: 'Agenda una llamada', href: 'https://rulocode.com/es/services' },
+      cta: CTA,
       hint: 'baja para volar',
-      diveScroll: 1.3,
-      connScroll: 0.9,
+      // Recorrido acortado ~25%: el vuelo avanza más por píxel de scroll, y la
+      // lectura ya no depende de bajar despacio sino de las paradas de abajo.
+      diveScroll: 1.0,
+      // Los conectores están recortados a 3s (72 frames) porque el modelo los hacía
+      // derivar de vuelta a la escena de la oficina en su segunda mitad.
+      connScroll: 0.3,
+      // Estaciones: el panel sube entre el 22% y el 31% del tramo, se queda quieto
+      // y legible hasta el 69%, y se va antes del 78%. Lo que queda a cada lado son
+      // tramos limpios donde solo se ve volar la cámara.
+      copyHold: [0.18, 0.82],
+      copyFade: 0.08,
+      // La cámara se frena justo en el centro del tramo — donde está la parada — y
+      // recupera velocidad al entrar y al salir. Es lo que da la sensación de fluidez.
+      linger: 0.55,
+      // Los conectores son pull-backs: terminan en la vista lejana de su isla y la
+      // siguiente escena entra desde su propia vista lejana. Una disolvencia ancha
+      // (el default es 0.12vh) hace que ese cambio se lea como intención, no como corte.
+      crossfade: 0.3,
+      // Con clips de ~4MB que se descargan enteros antes de poder scrubearse, 1.6vh
+      // de anticipación (el default) llega tarde: se ve el póster estático. 4.5vh
+      // arranca la descarga con varios segundos de margen.
+      preload: 4.5,
       sections: [
         {
-          id: 'lab', label: 'rulocode',
-          still: 'assets/lab.webp',
-          clip: 'assets/vid/lab.mp4',
+          id: 'semana', label: 'Empieza',
+          still: 'assets/ia/01-semana.webp',
+          clip: 'assets/vid/ia/v1.mp4', clipMobile: 'assets/vid/ia/v1-m.mp4',
           accent: '#2E9C7B',
-          scroll: 1.5, linger: 0.4,
-          eyebrow: 'Consultoría de IA y software',
-          title: 'Construyo la máquina que trabaja por tu empresa.',
-          body: 'Detecto las tareas que te comen horas y las convierto en IA, automatizaciones y software a medida.',
-          tags: ['IA', 'Software', 'Automatización'],
+          scroll: 1.2,
+          eyebrow: 'AI Shift Challenge · Semana 0 abierta',
+          title: 'Automatiza tu trabajo con IA en 4 semanas. Sin escribir código.',
+          body: 'Programa en vivo para profesionales no técnicos: 4 sesiones privadas, 2 grupales y una automatización tuya funcionando al final.',
+          tags: ['Gratis', 'Sin tarjeta', 'Empiezas hoy'],
         },
         {
-          id: 'retail', label: 'Automatización con IA',
-          still: 'assets/retail.webp',
-          clip: 'assets/vid/retail.mp4',
-          accent: '#4C90A3',
-          eyebrow: 'Automatización con IA',
-          title: 'Que la IA atienda lo repetitivo.',
-          body: 'Emails, reportes, datos y atención al cliente automatizados — con resultados en semanas, no meses.',
-          tags: ['Atención al cliente', 'Reportes y datos', 'En semanas'],
-        },
-        {
-          id: 'home', label: 'Consultoría de IA',
-          still: 'assets/home.webp',
-          clip: 'assets/vid/home.mp4',
+          id: 'rol', label: 'Tu rol',
+          still: 'assets/ia/02-rol.webp',
+          clip: 'assets/vid/ia/v2.mp4', clipMobile: 'assets/vid/ia/v2-m.mp4',
           accent: '#D3A048',
-          eyebrow: 'Consultoría e implementación de IA',
-          title: 'La IA, integrada en tu día a día.',
-          body: 'Diagnóstico de adopción, elección de herramientas y formación a tu equipo — de la estrategia a la implementación.',
-          tags: ['Diagnóstico', 'Formación', 'Herramientas'],
+          eyebrow: '01 · Tu rol primero',
+          title: 'Empezamos por tu trabajo, no por las herramientas.',
+          body: 'Mapeamos tu semana real y encontramos, para tu rol, dónde están las horas escondidas. Nada de recorridos genéricos.',
+          tags: ['Marketing', 'Finanzas', 'RRHH', 'Operaciones'],
         },
         {
-          id: 'research', label: 'Frontend & Performance',
-          still: 'assets/research.webp',
-          clip: 'assets/vid/research.mp4',
+          id: 'copiloto', label: 'Copiloto',
+          still: 'assets/ia/03-copiloto.webp',
+          clip: 'assets/vid/ia/v3.mp4', clipMobile: 'assets/vid/ia/v3-m.mp4',
           accent: '#4C90A3',
-          eyebrow: 'Desarrollo & performance',
-          title: 'Frontend de producción, rápido de verdad.',
-          body: 'Aplicaciones React y Next.js de la arquitectura al deploy, con auditorías de Web Vitals — hasta 56% menos de LCP.',
-          tags: ['React / Next.js', 'Web Vitals', '−56% LCP'],
+          eyebrow: '02 · Copiloto diario',
+          title: 'De prompts sueltos a flujos que entregan trabajo terminado.',
+          body: 'De usar la IA «a veces» a un sistema diario para analizar, escribir y producir con calidad profesional.',
+          tags: ['Analizar', 'Escribir', 'Producir'],
         },
         {
-          id: 'finale', label: 'Hablemos',
-          still: 'assets/finale.webp',
-          clip: 'assets/vid/finale.mp4',
+          id: 'automatiza', label: 'Automatiza',
+          still: 'assets/ia/04-automatiza.webp',
+          clip: 'assets/vid/ia/v4.mp4', clipMobile: 'assets/vid/ia/v4-m.mp4',
+          accent: '#E85E3E',
+          eyebrow: '03 · Automatización',
+          title: 'Tus tareas repetitivas, en piloto automático.',
+          body: 'Montas tus automatizaciones con herramientas de clics — correo, hojas, documentos — y liberas horas cada semana.',
+          tags: ['Sin código', 'Horas cada semana'],
+        },
+        {
+          id: 'reto', label: 'El reto',
+          still: 'assets/ia/05-reto.webp',
+          clip: 'assets/vid/ia/v5.mp4', clipMobile: 'assets/vid/ia/v5-m.mp4',
+          accent: '#9E4B3F',
+          scroll: 1.05,
+          eyebrow: '04 · El reto',
+          title: '4 sesiones privadas conmigo, 2 grupales, un flujo funcionando.',
+          body: 'Cuatro sesiones uno a uno sobre tu caso concreto, dos grupales con otros roles, y al final un flujo completo operando.',
+          tags: ['4 semanas', 'Solo 6 cupos'],
+        },
+        {
+          id: 'posicionate', label: 'Posiciónate',
+          still: 'assets/ia/06-posicionate.webp',
+          clip: 'assets/vid/ia/v6.mp4', clipMobile: 'assets/vid/ia/v6-m.mp4',
+          accent: '#4C90A3',
+          eyebrow: '05 · Posiciónate',
+          title: 'Sé la persona de IA de tu equipo.',
+          body: 'Cierras sabiendo demostrar tu automatización a tu jefe o tus clientes, y con un método para evaluar lo que salga mañana.',
+          tags: ['Demuéstralo', 'Criterio propio'],
+        },
+        {
+          id: 'semana0', label: 'Semana 0',
+          still: 'assets/ia/07-semana0.webp',
+          clip: 'assets/vid/ia/v7.mp4', clipMobile: 'assets/vid/ia/v7-m.mp4',
           accent: '#2E9C7B',
-          scroll: 1.8, linger: 0.5,
-          eyebrow: 'Hablemos',
-          title: 'Agenda una llamada gratis de 30 minutos.',
-          body: 'Sal de ella con 2-3 oportunidades de automatización detectadas — trabajemos juntos o no.',
-          tags: ['30 min', 'Sin compromiso'],
-          cta: { primary: { label: 'Agenda una llamada', href: 'https://rulocode.com/es/services' } },
+          scroll: 1.3,
+          eyebrow: 'Semana 0 · gratis',
+          title: 'No esperes a la cohorte — empieza esta semana.',
+          body: 'Tres lecciones gratis para diagnosticar tu semana, montar tu copiloto y dejar tu primera automatización corriendo.',
+          tags: ['3 lecciones gratis', 'Cero spam'],
+          cta: { primary: CTA },
         },
       ],
       connectors: [
-        'assets/vid/conn1.mp4',
-        'assets/vid/conn2.mp4',
-        'assets/vid/conn3.mp4',
-        'assets/vid/conn4.mp4',
+        'assets/vid/ia/c1.mp4',
+        'assets/vid/ia/c2.mp4',
+        'assets/vid/ia/c3.mp4',
+        'assets/vid/ia/c4.mp4',
+        'assets/vid/ia/c5.mp4',
+        'assets/vid/ia/c6.mp4',
+      ],
+      connectorsMobile: [
+        'assets/vid/ia/c1-m.mp4',
+        'assets/vid/ia/c2-m.mp4',
+        'assets/vid/ia/c3-m.mp4',
+        'assets/vid/ia/c4-m.mp4',
+        'assets/vid/ia/c5-m.mp4',
+        'assets/vid/ia/c6-m.mp4',
       ],
     });
   </script>

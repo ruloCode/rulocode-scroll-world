@@ -6,3 +6,8 @@ package.json
 package-lock.json
 *.log
 .DS_Store
+
+# Assets del landing anterior (consultoría, 720p). Siguen en el repo por si hay que
+# volver atrás, pero el sitio actual usa assets/ia/ + assets/vid/ia/ y no los pide.
+assets/*.webp
+assets/vid/*.mp4

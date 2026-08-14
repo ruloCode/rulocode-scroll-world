@@ -77,6 +77,14 @@ function mountScrollWorld(container, config) {
   const DIVE_W = config.diveScroll || 1.3;
   const CONN_W = config.connScroll || 0.9;
   const CROSSFADE = (config.crossfade != null) ? config.crossfade : 0.12;  // seam dissolve width (vh)
+  const PRELOAD_VH = config.preload || 1.6;   // viewport-heights of look-ahead when fetching clips
+  // Copy stations: instead of fading the copy in and out across the whole section
+  // (which leaves it half-visible almost everywhere), it holds at full opacity over
+  // a window of the section's progress. Outside that window the frame is clean and
+  // the flight reads on its own. [in, out] as a 0..1 fraction, `copyFade` = edge width.
+  const HOLD = config.copyHold || [0.22, 0.78];
+  const HOLD_EDGE = config.copyFade || 0.09;
+  const DEFAULT_LINGER = config.linger || 0;
   const N = SECTIONS.length;
   if (!N) return;
 
@@ -87,7 +95,8 @@ function mountScrollWorld(container, config) {
   const SEGMENTS = [];
   SECTIONS.forEach((s, i) => {
     const dive = { kind: 'dive', si: i, clip: s.clip, clipM: s.clipMobile, still: s.still, stillM: s.stillMobile,
-                   accent: s.accent, w: s.scroll || DIVE_W, linger: s.linger || 0 };
+                   accent: s.accent, w: s.scroll || DIVE_W,
+                   linger: (s.linger != null ? s.linger : DEFAULT_LINGER) };
     SEGMENTS.push(dive);
     s._seg = dive;
     // A connector is optional: if connectors[i] is falsy, the two dives simply
@@ -229,7 +238,10 @@ function mountScrollWorld(container, config) {
 
     for (let i = 0; i < NSEG; i++) {
       const s = SEGMENTS[i];
-      if (y > s.start - 1.6 * vh && y < s.end + 1.6 * vh) loadClip(s);
+      // Cada clip se descarga entero antes de poder scrubearse, así que 1.6vh de
+      // anticipación no alcanza: a ritmo de scroll normal el usuario llega a la
+      // escena antes que el vídeo y solo ve el póster. PRELOAD_VH lo adelanta.
+      if (y > s.start - PRELOAD_VH * vh && y < s.end + 1.6 * vh) loadClip(s);
       const local = clamp((y - s.start) / (s.end - s.start), 0, 1);
       s.target = s.linger ? lingerEase(local, s.linger) : local;
       let outside = 0;
@@ -248,12 +260,18 @@ function mountScrollWorld(container, config) {
       const pr = clamp((y - seg.start) / (seg.end - seg.start), 0, 1);
       const before = y < seg.start, after = y > seg.end;
       let cop;
-      if (i === 0) cop = after ? 0 : smooth(1 - pr / 0.62);            // greets on landing
-      else if (i === N - 1) cop = before ? 0 : smooth(pr / 0.4);       // holds CTA at the end
-      else cop = (before || after) ? 0 : smooth(1 - Math.abs(pr - 0.5) / 0.5);
+      // Trapezoid, not triangle: rise, hold, fall. The hold is the station where the
+      // camera has settled (see `linger`) and the copy is readable and still; before
+      // and after it the frame is clean so the flight itself carries the section.
+      if (i === 0) cop = after ? 0 : smooth((HOLD[1] - pr) / HOLD_EDGE);      // greets on landing
+      else if (i === N - 1) cop = before ? 0 : smooth((pr - HOLD[0]) / HOLD_EDGE); // holds CTA at the end
+      else cop = (before || after) ? 0
+        : smooth(Math.min((pr - HOLD[0]) / HOLD_EDGE, (HOLD[1] - pr) / HOLD_EDGE));
       const c = copies[i];
       c.style.opacity = cop;
-      c.style.transform = reduce ? 'none' : `translateY(${(0.5 - pr) * 4}vh)`;
+      // Drift only while it enters/leaves; dead still during the hold, so the text
+      // isn't sliding under the reader's eyes.
+      c.style.transform = reduce ? 'none' : `translateY(${((1 - cop) * 1.6).toFixed(2)}vh)`;
       c.style.pointerEvents = cop > 0.5 ? 'auto' : 'none';
     }
 

@@ -8,3 +8,4 @@ node_modules/
 # tooling de QA local — el sitio desplegado es solo HTML + JS + assets
 package.json
 package-lock.json
+.vercel
