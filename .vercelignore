@@ -11,3 +11,7 @@ package-lock.json
 # volver atrás, pero el sitio actual usa assets/ia/ + assets/vid/ia/ y no los pide.
 assets/*.webp
 assets/vid/*.mp4
+
+# Skills de generación (documentación del pipeline, no parte del sitio)
+scroll-world/
+scroll-world-apimart/
