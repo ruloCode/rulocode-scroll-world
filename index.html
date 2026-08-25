@@ -5,7 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>AI Shift Challenge — Automatiza tu trabajo con IA en 4 semanas</title>
   <meta name="description" content="Programa en vivo para profesionales no técnicos: 4 sesiones privadas, 2 grupales y una automatización tuya funcionando. Semana 0 gratis. Baja para volar." />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232E9C7B'/%3E%3Ccircle cx='21' cy='15' r='7' fill='%235A3A2A'/%3E%3Ccircle cx='32' cy='11' r='8' fill='%235A3A2A'/%3E%3Ccircle cx='43' cy='15' r='7' fill='%235A3A2A'/%3E%3Crect x='15' y='17' width='34' height='27' rx='9' fill='%23F4EAD5'/%3E%3Ccircle cx='26' cy='31' r='3.4' fill='%232A2320'/%3E%3Ccircle cx='38' cy='31' r='3.4' fill='%232A2320'/%3E%3C/svg%3E" />
+  <meta name="theme-color" content="#F4EAD5" />
+
+  <!-- Compartir: Open Graph + Twitter. og:image con URL absoluta — los scrapers
+       de las redes no resuelven rutas relativas. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="rulocode" />
+  <meta property="og:locale" content="es_ES" />
+  <meta property="og:url" content="https://rulocode-scroll-world.vercel.app/" />
+  <meta property="og:title" content="AI Shift Challenge — Automatiza tu trabajo con IA en 4 semanas" />
+  <meta property="og:description" content="Sin escribir código. Programa en vivo para profesionales no técnicos: 4 sesiones privadas, 2 grupales y una automatización tuya funcionando. Semana 0 gratis." />
+  <meta property="og:image" content="https://rulocode-scroll-world.vercel.app/assets/og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Rulo, el robot de rulocode, rodeado de piezas de su mundo — AI Shift Challenge: automatiza tu trabajo con IA en 4 semanas." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AI Shift Challenge — Automatiza tu trabajo con IA en 4 semanas" />
+  <meta name="twitter:description" content="Sin escribir código. Programa en vivo para profesionales no técnicos. Semana 0 gratis." />
+  <meta name="twitter:image" content="https://rulocode-scroll-world.vercel.app/assets/og.jpg" />
+  <link rel="icon" href="assets/rulo-mark.svg" type="image/svg+xml" />
   <!-- El póster y el primer vuelo son lo primero que se ve: que el navegador los pida
        ya, sin esperar a que el motor monte y calcule el scroll. -->
   <link rel="preload" as="image" href="assets/ia/01-semana.webp" />
@@ -141,14 +159,14 @@
   <div id="top"></div>
   <div id="world"></div>
 
-  <script src="stage-engine.js?v=2"></script>
+  <script src="stage-engine.js?v=3"></script>
   <script>
     // El vuelo sigue la narrativa de rulocode.com/es/ia: la semana atascada →
     // diagnóstico → copiloto → automatización → el reto → posicionarte → Semana 0.
     const CTA = { label: 'Entrar y empezar', href: 'https://rulocode.com/es/ia#lista' };
 
     mountStageWorld(document.getElementById('world'), {
-      brand: { name: 'rulocode', href: '#top' },
+      brand: { name: 'rulocode', href: '#top', logo: 'assets/rulo-mark.svg' },
       cta: CTA,
       hint: 'baja para volar',
       // El panel entra a los 2.2s de clip, con la animación todavía corriendo: así

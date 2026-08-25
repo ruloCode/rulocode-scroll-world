@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#37B08C"/>
+      <stop offset="1" stop-color="#1F7A5F"/>
+    </linearGradient>
+  </defs>
+  <!-- placa verde -->
+  <rect width="64" height="64" rx="15" fill="url(#g)"/>
+  <!-- afro: racimo de rizos -->
+  <circle cx="14" cy="18" r="6.5" fill="#5A3A2A"/>
+  <circle cx="23" cy="12.5" r="7.5" fill="#5A3A2A"/>
+  <circle cx="34" cy="10.5" r="8" fill="#5A3A2A"/>
+  <circle cx="45" cy="13" r="7.5" fill="#5A3A2A"/>
+  <circle cx="52" cy="19" r="6" fill="#5A3A2A"/>
+  <circle cx="18" cy="14.5" r="5.5" fill="#6B4632"/>
+  <circle cx="29" cy="9.5" r="6" fill="#6B4632"/>
+  <circle cx="40" cy="9.5" r="6" fill="#6B4632"/>
+  <circle cx="49" cy="14" r="5" fill="#6B4632"/>
+  <!-- cara -->
+  <rect x="14" y="17.5" width="36" height="29" rx="10" fill="#F4EAD5"/>
+  <circle cx="25.5" cy="31" r="3.6" fill="#2A2320"/>
+  <circle cx="38.5" cy="31" r="3.6" fill="#2A2320"/>
+  <path d="M27 38.5 q5 4.4 10 0" stroke="#2A2320" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+  <!-- pecho: botón ocre del personaje -->
+  <circle cx="32" cy="53.5" r="4.6" fill="#D3A048"/>
+</svg>
