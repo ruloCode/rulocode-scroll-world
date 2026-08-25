@@ -193,7 +193,10 @@ function mountStageWorld(container, config) {
     const prev = active;
     active = i;
 
-    if (prev >= 0) { stopSection(S[prev]); hideCopy(prev); }
+    // clearTimeout: sin él, el temporizador de red de seguridad de la sección que
+    // se abandona dispara showCopy() más tarde y deja copyShown=true en una sección
+    // inactiva — al volver a ella, el copy entraría por el fallback (+0.6s tarde).
+    if (prev >= 0) { stopSection(S[prev]); hideCopy(prev); clearTimeout(copyTimers[prev]); }
     S.forEach((s, k) => s.el.classList.toggle('is-on', k === i));
 
     container.style.setProperty('--sw-accent', SECTIONS[i].accent || '');
@@ -220,15 +223,20 @@ function mountStageWorld(container, config) {
 
   // La sección activa se deriva del scroll, no de un IntersectionObserver: con
   // umbrales fijos un salto grande (rueda rápida, barra de scroll, anclaje) puede
-  // no cruzar ningún threshold y dejar la sección sin activar. Esto no falla nunca.
+  // no cruzar ningún threshold y dejar la sección sin activar.
+  //
+  // El divisor es la altura REAL del spacer (100svh), no window.innerHeight: en
+  // Safari iOS innerHeight crece cuando la barra de URL se colapsa, mientras los
+  // spacers miden svh constante. Con ese desfase, round(scrollY/innerHeight) se
+  // queda una estación corta a partir de la 5ª-6ª y el scroll "no cambia de escena".
   let ticking = false;
   function onScroll() {
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(() => {
       ticking = false;
-      const vh = window.innerHeight || 1;
-      const i = Math.max(0, Math.min(N - 1, Math.round(window.scrollY / vh)));
+      const h = S[0].spacer.offsetHeight || window.innerHeight || 1;
+      const i = Math.max(0, Math.min(N - 1, Math.round(window.scrollY / h)));
       activate(i);
     });
   }
